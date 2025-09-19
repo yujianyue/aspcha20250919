@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #005a87;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>多TSV文本数据万用查分系统 - 测试页面</h1>
+        
+        <div class="test-section">
+            <h3>1. 测试文件列表功能</h3>
+            <button class="test-button" onclick="testFileList()">获取文件列表</button>
+            <div id="fileListResult" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. 测试验证码功能</h3>
+            <button class="test-button" onclick="testCaptcha()">获取验证码</button>
+            <div id="captchaResult" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. 测试查询功能</h3>
+            <button class="test-button" onclick="testSearch()">测试查询</button>
+            <div id="searchResult" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. 系统信息</h3>
+            <div class="result">
+                <strong>系统要求：</strong>
+                <ul>
+                    <li>支持ASP和VBScript的服务器</li>
+                    <li>IIS或类似Web服务器</li>
+                    <li>文件系统访问权限</li>
+                </ul>
+                
+                <strong>测试数据：</strong>
+                <ul>
+                    <li>学生信息.xls.php - 包含姓名、学号等字段</li>
+                    <li>员工信息.xls.php - 包含姓名、工号等字段</li>
+                    <li>商品信息.xls.php - 包含商品名称、编号等字段</li>
+                </ul>
+                
+                <strong>配置说明：</strong>
+                <ul>
+                    <li>查询字段：姓名、学号、工号</li>
+                    <li>隐藏字段：密码、身份证相关</li>
+                    <li>URL字段：购买地址、优惠券等</li>
+                    <li>图片字段：商品主图、产品图片</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showResult(elementId, content, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = content;
+            element.className = 'result ' + (isError ? 'error' : 'success');
+        }
+
+        function testFileList() {
+            fetch('index.asp?do=list')
+                .then(response => response.json())
+                .then(data => {
+                    showResult('fileListResult', JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    showResult('fileListResult', '错误: ' + error.message, true);
+                });
+        }
+
+        function testCaptcha() {
+            fetch('index.asp?do=code')
+                .then(response => response.json())
+                .then(data => {
+                    showResult('captchaResult', JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    showResult('captchaResult', '错误: ' + error.message, true);
+                });
+        }
+
+        function testSearch() {
+            const formData = new FormData();
+            formData.append('fileName', '学生信息');
+            formData.append('field_0', '张三'); // 姓名字段
+            formData.append('field_1', '2021001'); // 学号字段
+            formData.append('captcha', '1234'); // 测试验证码
+            formData.append('page', '1');
+
+            fetch('index.asp?do=cha', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('searchResult', JSON.stringify(data, null, 2));
+            })
+            .catch(error => {
+                showResult('searchResult', '错误: ' + error.message, true);
+            });
+        }
+    </script>
+</body>
+</html>
