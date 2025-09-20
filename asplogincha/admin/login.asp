@@ -111,7 +111,7 @@ Sub AdminLogin()
     conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & Server.MapPath("../data.mdb")
     
     ' 查询管理员
-    sql = "SELECT * FROM [user] WHERE [username]='" & SafeString(username) & "' AND [usertype]='admin' AND [check]=1"
+    sql = "SELECT * FROM [user] WHERE [username]='" & SafeString(username) & "' AND [usertype]='admin' AND [check]=True"
     Set rs = conn.Execute(sql)
     
     If Not rs.EOF Then

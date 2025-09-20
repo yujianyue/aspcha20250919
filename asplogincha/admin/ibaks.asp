@@ -139,6 +139,12 @@ End Sub
 Sub BackupDatabase()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     ' 创建备份文件夹
     Dim backupPath, fso
     backupPath = Server.MapPath("backup")
@@ -174,6 +180,12 @@ End Sub
 ' 获取备份列表
 Sub GetBackupList()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     Dim backupPath, fso, folder, file, files()
     backupPath = Server.MapPath("backup")
@@ -216,6 +228,12 @@ End Sub
 ' 恢复数据库
 Sub RestoreDatabase()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     Dim fileName, backupPath, sourceFile, targetFile, fso
     fileName = Request.Form("fileName")

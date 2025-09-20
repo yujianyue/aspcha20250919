@@ -158,6 +158,12 @@ End Sub
 Sub GetSalaryOptions()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     ' 连接数据库
     Dim conn, rs, sql
     Set conn = Server.CreateObject("ADODB.Connection")
@@ -181,6 +187,12 @@ End Sub
 ' 对比用户
 Sub CompareUsers()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     Dim salaryId
     salaryId = Request.Form("salaryId")

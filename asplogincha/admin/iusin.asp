@@ -106,6 +106,12 @@ End Sub
 Sub ImportUsers()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim userData, lines, i, line, fields, username, password, nickname
     userData = Request.Form("userData")
     
@@ -147,7 +153,7 @@ Sub ImportUsers()
                     
                     If rs.Fields(0).Value = 0 Then
                         ' 插入用户
-                        sql = "INSERT INTO [user] ([usertype], [username], [password], [nickname], [check]) VALUES ('user', '" & SafeString(username) & "', '" & MD5(password) & "', '" & SafeString(nickname) & "', 1)"
+                        sql = "INSERT INTO [user] ([usertype], [username], [password], [nickname], [check]) VALUES ('user', '" & SafeString(username) & "', '" & MD5(password) & "', '" & SafeString(nickname) & "', True)"
                         conn.Execute sql
                         
                         If Err.Number = 0 Then

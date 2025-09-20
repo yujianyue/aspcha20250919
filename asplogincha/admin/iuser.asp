@@ -275,6 +275,12 @@ End Sub
 Sub GetUserList()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim page, pageSize, keyword, status
     page = Request.Form("page")
     pageSize = Request.Form("pageSize")
@@ -329,6 +335,12 @@ End Sub
 Sub AddUser()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim username, password, nickname, check
     username = Request.Form("username")
     password = Request.Form("password")
@@ -381,6 +393,12 @@ End Sub
 Sub DeleteUser()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim id
     id = Request.Form("id")
     
@@ -412,6 +430,12 @@ End Sub
 Sub BatchDeleteUser()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim ids
     ids = Request.Form("ids")
     
@@ -442,6 +466,12 @@ End Sub
 ' 修改用户密码
 Sub ChangeUserPassword()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     Dim userid, newpass
     userid = Request.Form("user_id")

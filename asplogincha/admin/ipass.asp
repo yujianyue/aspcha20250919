@@ -93,6 +93,12 @@ End Sub
 Sub ChangePassword()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim oldpass, newpass, userid
     oldpass = Request.Form("oldpass")
     newpass = Request.Form("newpass")

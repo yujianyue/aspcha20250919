@@ -256,6 +256,12 @@ End Sub
 Sub GetSalaryList()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim page, pageSize, keyword, status
     page = Request.Form("page")
     pageSize = Request.Form("pageSize")
@@ -306,6 +312,12 @@ End Sub
 Sub EditSalary()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim id, timu, tiao, path, icha, cha_note
     id = Request.Form("id")
     timu = Request.Form("timu")
@@ -342,6 +354,12 @@ End Sub
 Sub DeleteSalary()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim id
     id = Request.Form("id")
     
@@ -372,6 +390,12 @@ End Sub
 ' 批量删除工资记录
 Sub BatchDeleteSalary()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     Dim ids
     ids = Request.Form("ids")

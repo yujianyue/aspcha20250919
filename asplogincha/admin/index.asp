@@ -110,6 +110,12 @@ End Sub
 Sub GetStats()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     ' 连接数据库
     Dim conn, rs, sql
     Set conn = Server.CreateObject("ADODB.Connection")
@@ -130,7 +136,7 @@ Sub GetStats()
     rs.Close
     
     ' 可查询记录数
-    sql = "SELECT COUNT(*) FROM [data] WHERE [icha]=1"
+    sql = "SELECT COUNT(*) FROM [data] WHERE [icha]=True"
     Set rs = conn.Execute(sql)
     activeCount = rs.Fields(0).Value
     rs.Close

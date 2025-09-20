@@ -187,10 +187,10 @@ Sub InstallDatabase()
     End If
     
     ' 创建表结构
-    Dim sqls(6)
-    sqls(0) = "CREATE TABLE [conn] ([id] AUTOINCREMENT PRIMARY KEY, [s_name] TEXT(50), [s_urls] TEXT(255), [s_tiao] TEXT(100), [s_isma] BIT, [s_logs] BIT, [s_desc] TEXT(255), [s_chax] TEXT(255), [s_jies] TEXT(255))"
-    sqls(1) = "CREATE TABLE [user] ([user_id] AUTOINCREMENT PRIMARY KEY, [usertype] TEXT(10), [username] TEXT(50), [password] TEXT(32), [nickname] TEXT(50), [check] BIT)"
-    sqls(2) = "CREATE TABLE [data] ([id] AUTOINCREMENT PRIMARY KEY, [timu] TEXT(100), [tiao] TEXT(100), [path] TEXT(255), [icha] BIT, [add_time] TEXT(8), [cha_note] TEXT(255))"
+    Dim sqls(2)
+    sqls(0) = "CREATE TABLE [conn] ([id] AUTOINCREMENT PRIMARY KEY, [s_name] TEXT(50), [s_urls] TEXT(255), [s_tiao] TEXT(100), [s_isma] YESNO, [s_logs] YESNO, [s_desc] TEXT(255), [s_chax] TEXT(255), [s_jies] TEXT(255))"
+    sqls(1) = "CREATE TABLE [user] ([user_id] AUTOINCREMENT PRIMARY KEY, [usertype] TEXT(10), [username] TEXT(50), [password] TEXT(32), [nickname] TEXT(50), [check] YESNO)"
+    sqls(2) = "CREATE TABLE [data] ([id] AUTOINCREMENT PRIMARY KEY, [timu] TEXT(100), [tiao] TEXT(100), [path] TEXT(255), [icha] YESNO, [add_time] TEXT(8), [cha_note] TEXT(255))"
     
     ' 执行创建表语句
     Dim i, success
@@ -204,18 +204,22 @@ Sub InstallDatabase()
     Next
     
     If success Then
-        ' 插入默认网站设置
-        conn.Execute "INSERT INTO [conn] ([s_name], [s_urls], [s_tiao], [s_isma], [s_logs], [s_desc], [s_chax], [s_jies]) VALUES ('通用工资查询系统', '', '姓名', 1, 1, '请输入您的姓名进行查询', '工资查询结果', '暂无相关数据')"
-        
-        ' 插入默认管理员账户
-        conn.Execute "INSERT INTO [user] ([usertype], [username], [password], [nickname], [check]) VALUES ('admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', '系统管理员', 1)"
+    ' 插入默认网站设置
+    conn.Execute "INSERT INTO [conn] ([s_name], [s_urls], [s_tiao], [s_isma], [s_logs], [s_desc], [s_chax], [s_jies]) VALUES ('通用工资查询系统', '', '姓名', True, True, '请输入您的姓名进行查询', '工资查询结果', '暂无相关数据')"
+    
+    ' 插入默认管理员账户
+    conn.Execute "INSERT INTO [user] ([usertype], [username], [password], [nickname], [check]) VALUES ('admin', 'admin', '21232f297a57a5a743894a0e4a801fc3', '系统管理员', True)"
         
         ' 如果选择导入示例数据
         If importSample = "1" Then
             Call ImportSampleDataToDB(conn)
         End If
         
-        ReturnSuccess "数据库安装成功！" & IIf(importSample = "1", "示例数据已导入。", "")
+        If importSample = "1" Then
+            ReturnSuccess "数据库安装成功！示例数据已导入。"
+        Else
+            ReturnSuccess "数据库安装成功！"
+        End If
     Else
         ReturnError "数据库安装失败：" & Err.Description
     End If
@@ -230,13 +234,13 @@ Sub ImportSampleDataToDB(conn)
     
     ' 导入示例用户数据
     For i = 1 To 30
-        sql = "INSERT INTO [user] ([usertype], [username], [password], [nickname], [check]) VALUES ('user', 'user" & i & "', '5d41402abc4b2a76b9719d911017c592', '用户" & i & "', 1)"
+        sql = "INSERT INTO [user] ([usertype], [username], [password], [nickname], [check]) VALUES ('user', 'user" & i & "', '5d41402abc4b2a76b9719d911017c592', '用户" & i & "', True)"
         conn.Execute sql
     Next
     
     ' 导入示例工资数据
     For i = 1 To 30
-        sql = "INSERT INTO [data] ([timu], [tiao], [path], [icha], [add_time], [cha_note]) VALUES ('2025年" & i & "月工资', 'user" & i & "', 'data/salary_" & i & ".txt', 1, '" & Format(Now(), "yyyymmdd") & "', '示例工资数据')"
+        sql = "INSERT INTO [data] ([timu], [tiao], [path], [icha], [add_time], [cha_note]) VALUES ('2025年" & i & "月工资', 'user" & i & "', 'data/salary_" & i & ".txt', True, '" & Format(Now(), "yyyymmdd") & "', '示例工资数据')"
         conn.Execute sql
     Next
 End Sub

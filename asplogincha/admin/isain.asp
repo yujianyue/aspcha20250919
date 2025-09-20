@@ -242,6 +242,12 @@ End Sub
 Sub ImportSalaryTxt()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim salaryData, lines, i, line, fields, tiao, dataContent
     salaryData = Request.Form("salaryData")
     
@@ -303,7 +309,7 @@ Sub ImportSalaryTxt()
                 Set fso = Nothing
                 
                 ' 插入数据库记录
-                sql = "INSERT INTO [data] ([timu], [tiao], [path], [icha], [add_time], [cha_note]) VALUES ('工资数据', '" & SafeString(tiao) & "', 'data/" & fileName & "', 1, '" & Format(Now(), "yyyymmdd") & "', 'TXT导入')"
+                sql = "INSERT INTO [data] ([timu], [tiao], [path], [icha], [add_time], [cha_note]) VALUES ('工资数据', '" & SafeString(tiao) & "', 'data/" & fileName & "', True, '" & Format(Now(), "yyyymmdd") & "', 'TXT导入')"
                 conn.Execute sql
                 
                 If Err.Number = 0 Then
@@ -331,6 +337,12 @@ End Sub
 ' 导入XLS工资数据
 Sub ImportSalaryXls()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     ' 这里需要处理文件上传，由于ASP的限制，简化处理
     ReturnError "XLS文件导入功能需要服务器支持文件上传，请使用TXT方式导入"

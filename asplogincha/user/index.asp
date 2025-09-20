@@ -282,7 +282,7 @@ Sub UserLogin()
     conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & Server.MapPath("../data.mdb")
     
     ' 查询用户
-    sql = "SELECT * FROM [user] WHERE [username]='" & SafeString(username) & "' AND [usertype]='user' AND [check]=1"
+    sql = "SELECT * FROM [user] WHERE [username]='" & SafeString(username) & "' AND [usertype]='user' AND [check]=True"
     Set rs = conn.Execute(sql)
     
     If Not rs.EOF Then
@@ -419,7 +419,7 @@ Sub GetSalaryData()
     conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & Server.MapPath("../data.mdb")
     
     ' 查询工资数据
-    sql = "SELECT * FROM [data] WHERE [id]=" & id & " AND [tiao]='" & SafeString(username) & "' AND [icha]=1"
+    sql = "SELECT * FROM [data] WHERE [id]=" & id & " AND [tiao]='" & SafeString(username) & "' AND [icha]=True"
     Set rs = conn.Execute(sql)
     
     If Not rs.EOF Then

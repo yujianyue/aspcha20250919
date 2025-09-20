@@ -165,6 +165,12 @@ End Sub
 Sub GetDataList()
     On Error Resume Next
     
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
+    
     Dim page, pageSize, keyword
     page = Request.Form("page")
     pageSize = Request.Form("pageSize")
@@ -210,6 +216,12 @@ End Sub
 ' 查看数据内容
 Sub ViewData()
     On Error Resume Next
+    
+    ' 检查管理员登录状态
+    If Session("usertype") <> "admin" Or Session("username") = "" Then
+        ReturnError "请先登录"
+        Exit Sub
+    End If
     
     Dim id
     id = Request.Form("id")
