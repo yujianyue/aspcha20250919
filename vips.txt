@@ -1,0 +1,62 @@
+{
+    "vip0": {
+        "name": "普通用户",
+        "max_records": 1000,
+        "max_upload": 100,
+        "max_file_size": 1048576
+    },
+    "vip1": {
+        "name": "VIP1",
+        "max_records": 5000,
+        "max_upload": 500,
+        "max_file_size": 2097152
+    },
+    "vip2": {
+        "name": "VIP2",
+        "max_records": 10000,
+        "max_upload": 1000,
+        "max_file_size": 4194304
+    },
+    "vip3": {
+        "name": "VIP3",
+        "max_records": 20000,
+        "max_upload": 2000,
+        "max_file_size": 8388608
+    },
+    "vip4": {
+        "name": "VIP4",
+        "max_records": 50000,
+        "max_upload": 5000,
+        "max_file_size": 16777216
+    },
+    "vip5": {
+        "name": "VIP5",
+        "max_records": 100000,
+        "max_upload": 10000,
+        "max_file_size": 33554432
+    },
+    "vip6": {
+        "name": "VIP6",
+        "max_records": 200000,
+        "max_upload": 20000,
+        "max_file_size": 67108864
+    },
+    "vip7": {
+        "name": "VIP7",
+        "max_records": 500000,
+        "max_upload": 50000,
+        "max_file_size": 134217728
+    },
+    "vip8": {
+        "name": "VIP8",
+        "max_records": 1000000,
+        "max_upload": 100000,
+        "max_file_size": 268435456
+    },
+    "vip9": {
+        "name": "VIP9",
+        "max_records": 2000000,
+        "max_upload": 200000,
+        "max_file_size": 536870912
+    }
+}
