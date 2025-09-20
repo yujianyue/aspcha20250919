@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>康熙字典查询系统 - 测试页面</h1>
+    
+    <div class="test-section">
+        <h2>系统状态检查</h2>
+        <div id="php-status" class="status info">检查PHP环境...</div>
+        <div id="file-status" class="status info">检查文件完整性...</div>
+        <div id="db-status" class="status info">检查数据库配置...</div>
+        <button onclick="runTests()">重新检测</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>功能测试</h2>
+        <p>请确保已将Access数据库文件 <code>data.mdb</code> 放入 <code>shujuku/</code> 目录</p>
+        <button onclick="testSearch()">测试查询功能</button>
+        <div id="search-result" class="status info" style="display: none;">查询测试结果将显示在这里</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>系统信息</h2>
+        <pre id="system-info">正在获取系统信息...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>使用说明</h2>
+        <ol>
+            <li>将Access数据库文件 <code>data.mdb</code> 放入 <code>shujuku/</code> 目录</li>
+            <li>确保数据库包含 <code>kangxi</code> 表，字段包括：<code>id</code>, <code>zi</code>, <code>lu</code>, <code>shu</code></li>
+            <li>访问 <a href="index.php">index.php</a> 开始使用系统</li>
+            <li>如有问题，请检查PHP错误日志和浏览器控制台</li>
+        </ol>
+    </div>
+
+    <script>
+        function runTests() {
+            checkPHP();
+            checkFiles();
+            checkDatabase();
+            getSystemInfo();
+        }
+        
+        function checkPHP() {
+            const status = document.getElementById('php-status');
+            status.textContent = 'PHP环境检查中...';
+            status.className = 'status info';
+            
+            fetch('test.php')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes('PHP Version')) {
+                        status.textContent = '✓ PHP环境正常';
+                        status.className = 'status success';
+                    } else {
+                        status.textContent = '✗ PHP环境异常';
+                        status.className = 'status error';
+                    }
+                })
+                .catch(error => {
+                    status.textContent = '✗ 无法连接到PHP';
+                    status.className = 'status error';
+                });
+        }
+        
+        function checkFiles() {
+            const status = document.getElementById('file-status');
+            const requiredFiles = ['index.php', 'search.php', 'config.php', 'style.css', 'script.js'];
+            let missingFiles = [];
+            
+            Promise.all(requiredFiles.map(file => 
+                fetch(file)
+                    .then(response => response.ok ? file : null)
+                    .catch(() => null)
+            )).then(results => {
+                missingFiles = results.filter(result => result === null);
+                
+                if (missingFiles.length === 0) {
+                    status.textContent = '✓ 所有必需文件存在';
+                    status.className = 'status success';
+                } else {
+                    status.textContent = `✗ 缺少文件: ${missingFiles.join(', ')}`;
+                    status.className = 'status error';
+                }
+            });
+        }
+        
+        function checkDatabase() {
+            const status = document.getElementById('db-status');
+            status.textContent = '检查数据库配置...';
+            status.className = 'status info';
+            
+            fetch('test.php?action=db')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes('success')) {
+                        status.textContent = '✓ 数据库配置正常';
+                        status.className = 'status success';
+                    } else {
+                        status.textContent = '✗ 数据库配置异常: ' + data;
+                        status.className = 'status error';
+                    }
+                })
+                .catch(error => {
+                    status.textContent = '✗ 无法检查数据库配置';
+                    status.className = 'status error';
+                });
+        }
+        
+        function testSearch() {
+            const result = document.getElementById('search-result');
+            result.style.display = 'block';
+            result.textContent = '正在测试查询功能...';
+            result.className = 'status info';
+            
+            const formData = new FormData();
+            formData.append('action', 'search');
+            formData.append('keyword', '心');
+            formData.append('type', 'zi');
+            formData.append('page', '1');
+            
+            fetch('index.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    result.textContent = `✓ 查询功能正常，找到 ${data.totalRecords} 条记录`;
+                    result.className = 'status success';
+                } else {
+                    result.textContent = `✗ 查询功能异常: ${data.message}`;
+                    result.className = 'status error';
+                }
+            })
+            .catch(error => {
+                result.textContent = '✗ 查询测试失败: ' + error.message;
+                result.className = 'status error';
+            });
+        }
+        
+        function getSystemInfo() {
+            const info = document.getElementById('system-info');
+            info.textContent = '正在获取系统信息...';
+            
+            fetch('test.php?action=info')
+                .then(response => response.text())
+                .then(data => {
+                    info.textContent = data;
+                })
+                .catch(error => {
+                    info.textContent = '无法获取系统信息: ' + error.message;
+                });
+        }
+        
+        // 页面加载时自动运行测试
+        window.onload = function() {
+            runTests();
+        };
+    </script>
+</body>
+</html>
